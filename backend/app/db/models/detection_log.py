@@ -26,6 +26,7 @@ class DetectionLog(Base):
     detections = Column(JSON)  # 감지된 객체들의 정보 (class_name, confidence, bbox 등)
     message = Column(String)  # 처리 결과 메시지
     has_fire = Column(Boolean, default=False)  # 화재 감지 여부
+    has_smoke = Column(Boolean, default=False)
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(pytz.timezone("Asia/Seoul")),

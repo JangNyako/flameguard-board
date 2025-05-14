@@ -9,8 +9,6 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from app.api.create_user.router import router as create_user_router
-from app.api.get_test.router import router as get_test_router
 
 from app.db.database import engine, Base
 from app.db.models import (
@@ -21,21 +19,21 @@ from app.db.models import (
 
 from fastapi.staticfiles import StaticFiles
 
-
 def init_db():
     Base.metadata.create_all(bind=engine)
 
-
 from contextlib import asynccontextmanager
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
     yield
 
-
 app = FastAPI(lifespan=lifespan)
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to FlameGuard API!"}
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,7 +42,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 api_dir = Path(__file__).parent / "api"
 
@@ -62,7 +59,6 @@ for api in api_dir.iterdir():
                 continue
             print(f"⚠️ {router_module} not found (router.py is missing)")
 
-
 # serve log folder as static files
 log_directory = os.path.join(os.path.dirname(__file__), "log")
 
@@ -71,3 +67,8 @@ if not os.path.exists(log_directory):
     os.makedirs(log_directory)
 
 app.mount("/log", StaticFiles(directory=log_directory), name="log")
+upload_directory = os.path.join(os.path.dirname(__file__), "..", "static", "uploads")
+if not os.path.exists(upload_directory):
+    os.makedirs(upload_directory)
+
+app.mount("/static/uploads", StaticFiles(directory=upload_directory), name="uploads")
