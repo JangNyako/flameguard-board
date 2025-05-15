@@ -238,8 +238,11 @@ export default function Home() {
           alertElement.classList.remove('animate-slideIn')
           alertElement.classList.add('animate-slideOut')
           flashOverlay.remove()
+
           setTimeout(() => {
-            document.body.removeChild(alertElement)
+            if (document.body.contains(alertElement)) {
+              document.body.removeChild(alertElement)
+            }
           }, 500)
         }
       }, 10000)

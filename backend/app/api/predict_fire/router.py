@@ -70,7 +70,7 @@ async def predict_fire(
     # load model
     try:
         model = YOLO("/home/jang/바탕화면/project-flame-guard/FlameGuard/backend/app/assets/best.pt")  # relative path
-        
+        # 여기 수정 너 주소로 수정. \ /
         logger.info("model loaded successfully.")
     except Exception as e:
         logger.error(f"error occurred while loading model: {str(e)}")
@@ -130,7 +130,7 @@ async def predict_fire(
             # 이미지 저장
             log_file_path = os.path.join(log_dir, new_file_name)
             cv2.imwrite(log_file_path, annotated_img)
-
+            print("🔥 저장되는 result_image:", new_file_name)
             result_file_key = new_file_name
 
             resResult = {

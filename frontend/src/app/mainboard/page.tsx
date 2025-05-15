@@ -11,11 +11,17 @@ interface Post {
   author_name: string
 }
 
+interface AlarmItem {
+  message: string
+  created_at: string
+  result_image?: string
+}
+
 export default function Mainboard() {
   const router = useRouter()
   const [recentPosts, setRecentPosts] = useState<Post[]>([])
   const [userName, setUserName] = useState<string | null>(null)
-
+  const [alarms, setAlarms] = useState<AlarmItem[]>([])
   useEffect(() => {
     const cookies = document.cookie.split('; ').reduce((acc, curr) => {
       const [key, value] = curr.split('=')
@@ -32,6 +38,9 @@ export default function Mainboard() {
     fetch('/api/board/recent')
       .then(res => res.json())
       .then(data => setRecentPosts(data))
+    fetch('/api/alarm/latest')
+      .then(res => res.json())
+      .then(data => setAlarms(data))
   }, [])
 
   function logout() {
@@ -57,10 +66,13 @@ export default function Mainboard() {
         <section className="section">
           <h2 className="section-h2">알림</h2>
           <ol style={{ listStyleType: 'none', paddingLeft: 0 }}>
-            <li>[화재 감지] (2025-03-24 13:40)</li>
-            <li>[화재 감지] (2025-03-22 09:15)</li>
-            <li>[연기 감지] (2025-03-20 17:30)</li>
+            {alarms.map((item, index) => (
+              <li key={index}>
+                [{item.message}] ({item.created_at})
+              </li>
+            ))}
           </ol>
+
           <div className="button-group">
             <span className="show-button" onClick={() => router.push('/alarm')}>
               전체보기
